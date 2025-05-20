@@ -1,11 +1,13 @@
 import inspect
 from functools import wraps
+from typing import Callable, Any
 
 
-def strict(func):
+def strict(func: Callable) -> Callable:
     '''Проверяет типы аргументов согласно аннотациям'''
+
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         sig = inspect.signature(func)
         ann = func.__annotations__
         params = list(sig.parameters.keys())
