@@ -9,14 +9,15 @@ class AnimalsSpider(scrapy.Spider):
     name = 'animals'
     allowed_domains = ['ru.wikipedia.org']
     start_urls = [
-        'https://ru.wikipedia.org/wiki/'
-        'Категория:Животные_по_алфавиту'
+        'https://ru.wikipedia.org/wiki/Категория:Животные_по_алфавиту'
     ]
 
     def __init__(self):
+        '''Счётчик животных по первой букве'''
         self.animals_data = defaultdict(int)
 
     def parse(self, response):
+        '''Парсим страницу, считаем животных по буквам'''
         groups = response.css('div#mw-pages div.mw-category-group')
 
         for group in groups:
@@ -33,6 +34,7 @@ class AnimalsSpider(scrapy.Spider):
             yield response.follow(next_page, callback=self.parse)
 
     def closed(self, reason):
+        '''Сохраняем результаты в CSV'''
         with open(
             'beasts.csv', 'w', encoding='utf-8', newline=''
         ) as f:
